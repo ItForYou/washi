@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">워시픽업</string>
+    <string name="index">https://www.washi.co.kr/</string>
+    <string name="cus_index">https://www.washi.co.kr/index.php</string>
+    <string name="intro">https://www.washi.co.kr/bbs/intro.php</string>
+    <string name="shopindex">https://www.washi.co.kr/bbs/shop/index.php</string>
+    <string name="driverindex"> https://www.washi.co.kr/bbs/driver/cs_driver_list01.php</string>
+</resources>

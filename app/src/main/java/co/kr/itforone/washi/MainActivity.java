@@ -1,5 +1,6 @@
 package co.kr.itforone.washi;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -15,7 +16,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,10 +32,17 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.mwebview)    WebView webView;
     //@BindView(R.id.refreshlayout)    SwipeRefreshLayout refreshlayout;
     WebSettings settings;
+    String token = "";
     String[] PERMISSIONS = {
+
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-    };
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.BLUETOOTH_ADMIN,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.VIBRATE
+
+};
 
     static final int PERMISSION_REQUEST_CODE = 1;
     private long backPrssedTime = 0;
@@ -71,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -85,6 +100,19 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("D", "getInstanceId failed", task.getException());
+                            return;
+                        }
+                        // Get new Instance ID token
+                        token = task.getResult().getToken();
+                    }
+        });
 
         settings = webView.getSettings();
         webView.setWebChromeClient(new ChromeManager(this,this));
@@ -109,9 +137,12 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
       //  WebBackForwardList historyList = webView.copyBackForwardList();
             Log.d("now_url",webView.getUrl());
+
+        if(webView.getUrl().equals(getString(R.string.driverindex))){
+            return;
+        }
         if(webView.getUrl().equals(getString(R.string.index)) || webView.getUrl().equals(getString(R.string.intro))
-                || webView.getUrl().equals(getString(R.string.shopindex)) || webView.getUrl().equals(getString(R.string.driverindex))
-                || webView.getUrl().equals(getString(R.string.cus_index))
+                || webView.getUrl().equals(getString(R.string.shopindex)) || webView.getUrl().equals(getString(R.string.cus_index))
         ){
 
             long tempTime = System.currentTimeMillis();
@@ -120,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
             if (0 <= intervalTime && 2000 >= intervalTime){
                 finish();
             }
+
             else
             {
                 webView.clearCache(true);

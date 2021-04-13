@@ -58,7 +58,7 @@ public class ViewManager extends WebViewClient {
 
     @Override
     public void onPageFinished(WebView view, String url) {
-
         super.onPageFinished(view, url);
+        view.loadUrl("javascript:setToken('"+mainActivity.token+"')");
     }
 }

@@ -39,6 +39,7 @@ public class ChromeManager extends WebChromeClient {
                                 result.confirm();
                             }
                         })
+                .setCancelable(false)
                 .setNegativeButton(android.R.string.cancel,
                         new DialogInterface.OnClickListener() {
                             @Override

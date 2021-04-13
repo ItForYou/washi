@@ -1,7 +1,10 @@
 package co.kr.itforone.washi;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.webkit.JavascriptInterface;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class WebviewJavainterface {
 
@@ -18,8 +21,24 @@ public class WebviewJavainterface {
     }
 
     @JavascriptInterface
-    public void temp_first() {
+    public void setLogininfo(String id, String password) {
 
+        SharedPreferences pref = mainActivity.getSharedPreferences("logininfo", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("id",id);
+        editor.putString("pwd",password);
+        editor.commit();
+
+
+    }
+
+    @JavascriptInterface
+    public void setlogout() {
+        //   Toast.makeText(mainActivity.getApplicationContext(),"logout",Toast.LENGTH_LONG).show();
+        SharedPreferences pref = mainActivity.getSharedPreferences("logininfo", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        editor.commit();
     }
 
 }

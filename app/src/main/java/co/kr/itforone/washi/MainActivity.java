@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     static final int PERMISSION_REQUEST_CODE = 1;
     private long backPrssedTime = 0;
+    String user_id="", user_pwd="";
 
     private boolean hasPermissions(String[] permissions){
         // 퍼미션 확인해
@@ -114,6 +116,13 @@ public class MainActivity extends AppCompatActivity {
                     }
         });
 
+        SharedPreferences pref = getSharedPreferences("logininfo", MODE_PRIVATE);
+        user_id = pref.getString("id", "");
+        user_pwd = pref.getString("pwd", "");
+
+
+
+
         settings = webView.getSettings();
         webView.setWebChromeClient(new ChromeManager(this,this));
         webView.setWebViewClient(new ViewManager(this, this));
@@ -129,7 +138,13 @@ public class MainActivity extends AppCompatActivity {
         settings.setTextZoom(100);       // 폰트크기 고정
         settings.setUserAgentString("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Mobile Safari/537.36"+"/AGold");
         webView.setWebContentsDebuggingEnabled(true);
-        webView.loadUrl(getString(R.string.index));
+
+        if(!user_id.isEmpty() && !user_pwd.isEmpty()){
+            webView.loadUrl(getString(R.string.login) + "mb_id=" + user_id + "&mb_password=" + user_pwd);
+        }
+        else {
+            webView.loadUrl(getString(R.string.index));
+        }
 
     }
 

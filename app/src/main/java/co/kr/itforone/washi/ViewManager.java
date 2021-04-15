@@ -3,17 +3,18 @@ package co.kr.itforone.washi;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class ViewManager extends WebViewClient {
     MainActivity mainActivity;
     Activity activity;
-
-
-
 
     public ViewManager(MainActivity mainActivity, Activity activity) {
         this.mainActivity = mainActivity;
@@ -43,6 +44,8 @@ public class ViewManager extends WebViewClient {
                     Log.d("package_intent_2",intent.getScheme());
                     activity.startActivity(marketIntent);
                 }
+
+
                 return true;
             } catch (Exception e) {
                 Log.d("error1",e.toString());
@@ -53,12 +56,30 @@ public class ViewManager extends WebViewClient {
         else {
             view.loadUrl(url);
         }
+
+
+        mainActivity.progressBar.setVisibility(View.VISIBLE);
+        mainActivity.progressBar.setIndeterminate(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mainActivity.progressBar.getIndeterminateDrawable().setColorFilter(mainActivity.getColor(R.color.blue), PorterDuff.Mode.MULTIPLY);
+        }
+        else{
+            mainActivity.progressBar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#0091ff"), PorterDuff.Mode.MULTIPLY);
+        }
+
         return false;
     }
 
     @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
+        Log.d("pushurl4",mainActivity.pushurl
+        );
         view.loadUrl("javascript:setToken('"+mainActivity.token+"')");
+        if(!mainActivity.pushurl.isEmpty() && !mainActivity.pushurl.equals("")){
+            view.loadUrl(mainActivity.pushurl);
+            mainActivity.pushurl="";
+        }
+        mainActivity.progressBar.setVisibility(View.GONE);
     }
 }

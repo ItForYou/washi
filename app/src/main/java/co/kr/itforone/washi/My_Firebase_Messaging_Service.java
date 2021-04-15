@@ -43,15 +43,17 @@ public class My_Firebase_Messaging_Service extends FirebaseMessagingService {
         String messageBody=remoteMessage.getData().get("message");
         String subject=remoteMessage.getData().get("subject");
         String goUrl=remoteMessage.getData().get("goUrl");
-        String channelId = "fingerrate";
-        Log.d("remote","Message:"+remoteMessage.getFrom());
 
+
+        String channelId = "washi";
+        Log.d("fcm_remote","Message:"+remoteMessage.getData().toString());
+        Log.d("fcm_remote","!!gourl!!"+goUrl);
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("goUrl",goUrl);
 
-
+        Log.d("fcm_remote",intent.getStringExtra("goUrl"));
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -80,8 +82,8 @@ public class My_Firebase_Messaging_Service extends FirebaseMessagingService {
             NotificationChannel channel = new NotificationChannel(channelId,
                     "Channel human readable title",
                     NotificationManager.IMPORTANCE_HIGH);
-            notificationManager.createNotificationChannel(channel);
-            AudioAttributes att = new AudioAttributes.Builder()
+                    notificationManager.createNotificationChannel(channel);
+                    AudioAttributes att = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                     .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                     .build();
@@ -90,4 +92,3 @@ public class My_Firebase_Messaging_Service extends FirebaseMessagingService {
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
 }
-

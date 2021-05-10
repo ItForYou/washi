@@ -31,6 +31,12 @@ public class WebviewJavainterface {
 
 
     }
+    @JavascriptInterface
+    public void printexcute(String txt) {
+
+        mainActivity.print_excute(txt);
+
+    }
 
     @JavascriptInterface
     public void setlogout() {

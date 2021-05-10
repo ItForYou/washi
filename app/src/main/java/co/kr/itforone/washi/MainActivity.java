@@ -10,8 +10,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -21,13 +19,13 @@ import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bxl.config.editor.BXLConfigLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.mwebview)    WebView webView;
     @BindView(R.id.progressbar)    ProgressBar progressBar;
+    private int portType = BXLConfigLoader.DEVICE_BUS_BLUETOOTH;
 
     //@BindView(R.id.refreshlayout)    SwipeRefreshLayout refreshlayout;
     WebSettings settings;
@@ -164,6 +163,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    public void print_excute(String text) {
+
+        Intent i  = new Intent(MainActivity.this,PrinterConnectActivity.class);
+        i.putExtra("input_text", text);
+        startActivity(i);
+
+    }
+
+
+
 
     @Override
     public void onBackPressed() {

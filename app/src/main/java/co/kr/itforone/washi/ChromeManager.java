@@ -13,7 +13,7 @@ public class ChromeManager extends WebChromeClient {
     Activity activity;
     MainActivity mainActivity;
     public Dialog dialog;
-
+    static final int FILECHOOSER_LOLLIPOP_REQ_CODE=1300;
     public ChromeManager(MainActivity mainActivity, Activity activity) {
         this.mainActivity = mainActivity;
         this.activity = activity;

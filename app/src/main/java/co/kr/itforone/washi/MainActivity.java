@@ -1,19 +1,25 @@
 package co.kr.itforone.washi;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
@@ -39,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     //@BindView(R.id.refreshlayout)    SwipeRefreshLayout refreshlayout;
     WebSettings settings;
     String token = "";
+    Uri mCapturedImageURI;
     String[] PERMISSIONS = {
 
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -46,14 +53,18 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.VIBRATE
+            Manifest.permission.VIBRATE,
+            Manifest.permission.CAMERA
+
 
     };
-
+    Intent notiservice;
     static final int PERMISSION_REQUEST_CODE = 1;
+    static final int StartForegroundService = 1000;
+    static final int StopForegroundService = 1001;
     private long backPrssedTime = 0;
     String user_id="", user_pwd="", pushurl="",pushurl2="";
-
+    final int  FILECHOOSER_LOLLIPOP_REQ_CODE = 1300;
     private boolean hasPermissions(String[] permissions){
         // 퍼미션 확인해
         int result = -1;
@@ -88,6 +99,20 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK){
+
+            switch (requestCode){
+
+                case FILECHOOSER_LOLLIPOP_REQ_CODE : break;
+
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     @Override
@@ -164,6 +189,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
     public void print_excute(String text) {
 
         Intent i  = new Intent(MainActivity.this,PrinterConnectActivity.class);
@@ -172,25 +202,38 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-
     @Override
     public void onBackPressed() {
       //  WebBackForwardList historyList = webView.copyBackForwardList();
             Log.d("now_url",webView.getUrl());
 
-        if(webView.getUrl().equals(getString(R.string.driverindex))){
+        /*if(webView.getUrl().equals(getString(R.string.driverindex))){
             return;
-        }
+        }*/
+
+
+
         if(webView.getUrl().equals(getString(R.string.index)) || webView.getUrl().equals(getString(R.string.intro))
                 || webView.getUrl().equals(getString(R.string.shopindex)) || webView.getUrl().equals(getString(R.string.cus_index))
+                || webView.getUrl().equals(getString(R.string.driverindex))
         ){
 
             long tempTime = System.currentTimeMillis();
             long intervalTime = tempTime - backPrssedTime;
 
             if (0 <= intervalTime && 2000 >= intervalTime){
+
+                if (webView.getUrl().equals(getString(R.string.driverindex))){
+                    Intent notiservice_start = new Intent(getApplicationContext(),Notiservice.class);
+                    notiservice_start.putExtra("flg", StartForegroundService);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(notiservice_start);
+                    }
+                    else{
+                        startService(notiservice_start);
+                    }
+                }
                 finish();
             }
 

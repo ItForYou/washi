@@ -1,7 +1,10 @@
 package co.kr.itforone.washi;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.webkit.JavascriptInterface;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -45,6 +48,26 @@ public class WebviewJavainterface {
         SharedPreferences.Editor editor = pref.edit();
         editor.clear();
         editor.commit();
+
+        Intent notiservice_stop = new Intent(mainActivity,Notiservice.class);
+        notiservice_stop.putExtra("flg", mainActivity.StopForegroundService);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mainActivity.startForegroundService(notiservice_stop);
+        }
+        else {
+            mainActivity.startService(notiservice_stop);
+        }
+
+    }
+
+    @JavascriptInterface
+    public void startCamera() {
+
+
+        Intent captureIntent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+        //captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mainActivity.mCapturedImageURI);
+        mainActivity.startActivity(captureIntent);
+
     }
 
 }

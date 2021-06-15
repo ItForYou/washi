@@ -32,13 +32,11 @@ public class WebviewJavainterface {
         editor.putString("pwd",password);
         editor.commit();
 
-
     }
+
     @JavascriptInterface
     public void printexcute(String txt) {
-
         mainActivity.print_excute(txt);
-
     }
 
     @JavascriptInterface
@@ -63,9 +61,7 @@ public class WebviewJavainterface {
     @JavascriptInterface
     public void startCamera() {
 
-
         Intent captureIntent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
-        //captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mainActivity.mCapturedImageURI);
         mainActivity.startActivity(captureIntent);
 
     }
